@@ -4,7 +4,7 @@
 // |----------------------------------------------------------------------
 // |Date         : 2020-07-08 16:36:17
 // |----------------------------------------------------------------------
-// |LastEditTime : 2020-08-01 17:51:10
+// |LastEditTime : 2020-08-01 18:28:26
 // |----------------------------------------------------------------------
 // |LastEditors  : Jarmin <edshop@qq.com>
 // |----------------------------------------------------------------------
@@ -190,6 +190,6 @@ if (!function_exists('addons_url')) {
             }
         }
 
-        return Route::buildUrl("@{$addonsDir}/{$addons}/{$controller}-{$action}", $param)->suffix($suffix)->domain($domain);
+        return Route::buildUrl("@{$addonsDir}/{$addons}/{$controller}/{$action}", $param)->suffix($suffix)->domain($domain);
     }
 }
