@@ -4,7 +4,7 @@
 // |----------------------------------------------------------------------
 // |Date         : 2020-07-08 16:36:17
 // |----------------------------------------------------------------------
-// |LastEditTime : 2020-07-30 20:37:54
+// |LastEditTime : 2020-08-01 17:51:10
 // |----------------------------------------------------------------------
 // |LastEditors  : Jarmin <edshop@qq.com>
 // |----------------------------------------------------------------------
@@ -16,6 +16,7 @@
 // -----------------------------------------------------------------------
 declare(strict_types=1);
 
+use think\facade\Config;
 use think\facade\Event;
 use think\facade\Route;
 use think\helper\{
@@ -32,9 +33,9 @@ use think\helper\{
 spl_autoload_register(function ($class) {
 
     $class = ltrim($class, '\\');
-
+    $addonsDir = Config::get('addons.dir', 'addons');
     $dir = app()->getRootPath();
-    $namespace = 'addons';
+    $namespace = $addonsDir;
 
     if (strpos($class, $namespace) === 0) {
         $class = substr($class, strlen($namespace));
@@ -63,14 +64,14 @@ if (!function_exists('hook')) {
      * 处理插件钩子
      * @param string $event 钩子名称
      * @param array|null $params 传入参数
+     * @param bool       $isArray
      * @param bool $once 是否只返回一个结果
      * @return mixed
      */
-    function hook($event, $params = null, bool $once = false)
+    function hook($event, $params = null, $isArray = false, bool $once = false)
     {
         $result = Event::trigger($event, $params, $once);
-
-        return join('', $result);
+        return $isArray ? $result : join('', $result);
     }
 }
 
@@ -124,7 +125,8 @@ if (!function_exists('get_addons_class')) {
      */
     function get_addons_class($name, $type = 'hook', $class = null)
     {
-        $name = trim($name);
+        $name      = trim($name);
+        $addonsDir = Config::get('addons.dir', 'addons');
         // 处理多级控制器情况
         if (!is_null($class) && strpos($class, '.')) {
             $class = explode('.', $class);
@@ -136,10 +138,11 @@ if (!function_exists('get_addons_class')) {
         }
         switch ($type) {
             case 'controller':
-                $namespace = '\\addons\\' . $name . '\\controller\\' . $class;
+                $class     = Config::get('route.controller_suffix') ? $class . 'Controller' : $class;
+                $namespace = '\\' . $addonsDir . '\\' . $name . '\\controller\\' . $class;
                 break;
             default:
-                $namespace = '\\addons\\' . $name . '\\Plugin';
+                $namespace = '\\' . $addonsDir . '\\' . $name . '\\' . $class;
         }
 
         return class_exists($namespace) ? $namespace : '';
@@ -155,9 +158,10 @@ if (!function_exists('addons_url')) {
      * @param bool|string $domain 域名
      * @return bool|string
      */
-    function addons_url($url = '', $param = [], $suffix = true, $domain = false)
+    function addons_url($url = '', $param = [], $suffix = false, $domain = false)
     {
-        $request = app('request');
+        $request   = app('request');
+        $addonsDir = Config::get('addons.dir', 'addons');
         if (empty($url)) {
             // 生成 url 模板变量
             $addons = $request->addon;
@@ -186,7 +190,6 @@ if (!function_exists('addons_url')) {
             }
         }
 
-        return Route::buildUrl("@addons/{$addons}/{$controller}/{$action}", $param)->suffix($suffix)->domain($domain);
+        return Route::buildUrl("@{$addonsDir}/{$addons}/{$controller}-{$action}", $param)->suffix($suffix)->domain($domain);
     }
 }
-

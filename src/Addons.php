@@ -73,7 +73,7 @@ abstract class Addons
     final protected function getName()
     {
         $class = get_class($this);
-        list(, $name, ) = explode('\\', $class);
+        [ , $name, ] = explode('\\', $class);
         $this->request->addon = $name;
 
         return $name;
@@ -112,22 +112,18 @@ abstract class Addons
      */
     protected function assign($name, $value = '')
     {
-        $this->view->assign([$name => $value]);
-
-        return $this;
+        return $this->view->assign([$name => $value]);
     }
 
     /**
      * 初始化模板引擎
      * @access protected
      * @param  array|string $engine 引擎参数
-     * @return $this
+     * @return View
      */
     protected function engine($engine)
     {
-        $this->view->engine($engine);
-
-        return $this;
+        return $this->view->engine($engine);
     }
 
     /**

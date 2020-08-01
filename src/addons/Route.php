@@ -39,6 +39,8 @@ class Route
 
         Event::trigger('addons_begin', $request);
 
+        $controller = empty($controller) ? Config::get('route.default_controller') : $controller;
+        $action = empty($action) ? Config::get('route.default_action') : $action;
         if (empty($addon) || empty($controller) || empty($action)) {
             throw new HttpException(500, lang('addon can not be empty'));
         }
