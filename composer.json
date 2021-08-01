@@ -19,7 +19,7 @@
             "think\\": "src/"
         },
         "files": [
-            "src/helper.php"
+            "src/Helper.php"
         ]
     },
     "extra": {
@@ -28,7 +28,7 @@
                 "think\\addons\\Service"
             ],
             "config":{
-                "addons": "src/config.php"
+                "addons": "src/Config.php"
             }
         }
     },
