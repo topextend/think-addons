@@ -16,7 +16,6 @@
 // -----------------------------------------------------------------------
 declare(strict_types=1);
 
-use think\facade\Config;
 use think\facade\Event;
 use think\facade\Route;
 use think\helper\{
@@ -33,9 +32,9 @@ use think\helper\{
 spl_autoload_register(function ($class) {
 
     $class = ltrim($class, '\\');
-    $addonsDir = Config::get('addons.dir', 'addons');
+
     $dir = app()->getRootPath();
-    $namespace = $addonsDir;
+    $namespace = 'addons';
 
     if (strpos($class, $namespace) === 0) {
         $class = substr($class, strlen($namespace));
@@ -64,14 +63,14 @@ if (!function_exists('hook')) {
      * 处理插件钩子
      * @param string $event 钩子名称
      * @param array|null $params 传入参数
-     * @param bool       $isArray
      * @param bool $once 是否只返回一个结果
      * @return mixed
      */
-    function hook($event, $params = null, $isArray = false, bool $once = false)
+    function hook($event, $params = null, bool $once = false)
     {
         $result = Event::trigger($event, $params, $once);
-        return $isArray ? $result : join('', $result);
+
+        return join('', $result);
     }
 }
 
@@ -125,8 +124,7 @@ if (!function_exists('get_addons_class')) {
      */
     function get_addons_class($name, $type = 'hook', $class = null)
     {
-        $name      = trim($name);
-        $addonsDir = Config::get('addons.dir', 'addons');
+        $name = trim($name);
         // 处理多级控制器情况
         if (!is_null($class) && strpos($class, '.')) {
             $class = explode('.', $class);
@@ -138,11 +136,10 @@ if (!function_exists('get_addons_class')) {
         }
         switch ($type) {
             case 'controller':
-                $class     = Config::get('route.controller_suffix') ? $class . 'Controller' : $class;
-                $namespace = '\\' . $addonsDir . '\\' . $name . '\\controller\\' . $class;
+                $namespace = '\\addons\\' . $name . '\\controller\\' . $class;
                 break;
             default:
-                $namespace = '\\' . $addonsDir . '\\' . $name . '\\' . $class;
+                $namespace = '\\addons\\' . $name . '\\Plugin';
         }
 
         return class_exists($namespace) ? $namespace : '';
@@ -158,10 +155,9 @@ if (!function_exists('addons_url')) {
      * @param bool|string $domain 域名
      * @return bool|string
      */
-    function addons_url($url = '', $param = [], $suffix = false, $domain = false)
+    function addons_url($url = '', $param = [], $suffix = true, $domain = false)
     {
-        $request   = app('request');
-        $addonsDir = Config::get('addons.dir', 'addons');
+        $request = app('request');
         if (empty($url)) {
             // 生成 url 模板变量
             $addons = $request->addon;
@@ -190,6 +186,7 @@ if (!function_exists('addons_url')) {
             }
         }
 
-        return Route::buildUrl("@{$addonsDir}/{$addons}/{$controller}/{$action}", $param)->suffix($suffix)->domain($domain);
+        return Route::buildUrl("@addons/{$addons}/{$controller}/{$action}", $param)->suffix($suffix)->domain($domain);
     }
 }
+

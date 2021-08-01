@@ -27,20 +27,19 @@ class Route
 {
     /**
      * 插件路由请求
-     * @param null $addon
-     * @param null $controller
-     * @param null $action
      * @return mixed
      */
-    public static function execute($addon = null, $controller = null, $action = null)
+    public static function execute()
     {
         $app = app();
         $request = $app->request;
 
+        $addon = $request->route('addon');
+        $controller = $request->route('controller');
+        $action = $request->route('action');
+
         Event::trigger('addons_begin', $request);
 
-        $controller = empty($controller) ? Config::get('route.default_controller') : $controller;
-        $action = empty($action) ? Config::get('route.default_action') : $action;
         if (empty($addon) || empty($controller) || empty($action)) {
             throw new HttpException(500, lang('addon can not be empty'));
         }
