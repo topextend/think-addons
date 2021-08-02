@@ -60,7 +60,7 @@ return [
 > 在addons目录中创建test目录
 
 ### 创建钩子实现类
-> 在test目录中创建 Plugin.php 类文件。注意：类文件首字母需大写
+> 在test目录中创建 Test.php 类文件。注意：类文件首字母需大写,要与插件目录同名
 
 ```php
 <?php
@@ -70,17 +70,23 @@ use think\Addons;
 
 /**
  * 插件测试
- * @author byron sampson
+ * @author Jarmin
  */
-class Plugin extends Addons	// 需继承think\Addons类
+class Test extends Addons	// 需继承think\Addons类
 {
     // 该插件的基础信息
     public $info = [
-        'name' => 'test',	// 插件标识
-        'title' => '插件测试',	// 插件名称
-        'description' => 'thinkph6插件测试',	// 插件简介
-        'status' => 0,	// 状态
-        'author' => 'byron sampson',
+        // 插件标识
+        'name' => 'test',
+        // 插件名称
+        'title' => '插件测试',
+        // 插件简介
+        'description' => 'thinkph6插件测试',
+        // 状态:0=禁用;1=启用
+        'status' => 0,
+        // 插件作者
+        'author' => 'Jarmin',
+        // 插件版本
         'version' => '0.1'
     ];
 
