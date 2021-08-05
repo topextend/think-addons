@@ -4,7 +4,7 @@
 // |@----------------------------------------------------------------------
 // |@Date         : 2021-08-01 11:23:21
 // |@----------------------------------------------------------------------
-// |@LastEditTime : 2021-08-01 17:46:00
+// |@LastEditTime : 2021-08-05 12:53:11
 // |@----------------------------------------------------------------------
 // |@LastEditors  : Jarmin <jarmin@ladmin.cn>
 // |@----------------------------------------------------------------------
@@ -23,6 +23,10 @@ use think\helper\Str;
 use think\facade\Config;
 use think\facade\View;
 
+/**
+ * 插件基类控制器
+ * @package think\addons
+ */
 abstract class Addons
 {
     // app 容器
@@ -57,7 +61,6 @@ abstract class Addons
         $this->view->config([
             'view_path' => $this->addon_path . 'view' . DIRECTORY_SEPARATOR
         ]);
-
         // 控制器初始化
         $this->initialize();
     }
@@ -75,7 +78,6 @@ abstract class Addons
         $class = get_class($this);
         list(, $name, ) = explode('\\', $class);
         $this->request->addon = $name;
-
         return $name;
     }
 
@@ -113,7 +115,6 @@ abstract class Addons
     protected function assign($name, $value = '')
     {
         $this->view->assign([$name => $value]);
-
         return $this;
     }
 
@@ -126,7 +127,6 @@ abstract class Addons
     protected function engine($engine)
     {
         $this->view->engine($engine);
-
         return $this;
     }
 
@@ -137,10 +137,7 @@ abstract class Addons
     final public function getInfo()
     {
         $info = Config::get($this->addon_info, []);
-        if ($info) {
-            return $info;
-        }
-
+        if ($info) return $info;
         // 文件属性
         $info = $this->info ?? [];
         // 文件配置
@@ -151,7 +148,6 @@ abstract class Addons
             $info = array_merge($_info, $info);
         }
         Config::set($info, $this->addon_info);
-
         return isset($info) ? $info : [];
     }
 
@@ -163,9 +159,7 @@ abstract class Addons
     final public function getConfig($type = false)
     {
         $config = Config::get($this->addon_config, []);
-        if ($config) {
-            return $config;
-        }
+        if ($config) return $config;
         $config_file = $this->addon_path . 'config.php';
         if (is_file($config_file)) {
             $temp_arr = (array)include $config_file;
@@ -178,7 +172,6 @@ abstract class Addons
             unset($temp_arr);
         }
         Config::set($config, $this->addon_config);
-
         return $config;
     }
 

@@ -4,7 +4,7 @@
 // |@----------------------------------------------------------------------
 // |@Date         : 2021-08-01 11:23:21
 // |@----------------------------------------------------------------------
-// |@LastEditTime : 2021-08-01 17:45:45
+// |@LastEditTime : 2021-08-05 12:31:02
 // |@----------------------------------------------------------------------
 // |@LastEditors  : Jarmin <jarmin@ladmin.cn>
 // |@----------------------------------------------------------------------
@@ -39,9 +39,8 @@ class Service extends \think\Service
     {
         $this->addons_path = $this->getAddonsPath();
         // 加载系统语言包
-        Lang::load([
-            $this->app->getRootPath() . '/vendor/topextend/think-addons/src/lang/zh-cn.php'
-        ]);
+        $this->app->lang->load(dirname(__DIR__) . '/lang/zh-cn.php', 'zh-cn');
+        $this->app->lang->load(dirname(__DIR__) . '/lang/en-us.php', 'en-us');
         // 自动载入插件
         $this->autoload();
         // 加载插件事件
@@ -57,12 +56,10 @@ class Service extends \think\Service
         $this->registerRoutes(function (Route $route) {
             // 路由脚本
             $execute = '\\think\\addons\\Route@execute';
-
             // 注册插件公共中间件
             if (is_file($this->app->addons->getAddonsPath() . 'middleware.php')) {
                 $this->app->middleware->import(include $this->app->addons->getAddonsPath() . 'middleware.php', 'route');
             }
-
             // 注册控制器路由
             $route->rule("addons/:addon/:controller/:action$", $execute)->middleware(Addons::class);
             // 自定义路由
@@ -225,7 +222,6 @@ class Service extends \think\Service
         if (!is_dir($addons_path)) {
             @mkdir($addons_path, 0755, true);
         }
-
         return $addons_path;
     }
 
@@ -241,7 +237,6 @@ class Service extends \think\Service
         if (!$addon) {
             return [];
         }
-
         return $addon->getConfig();
     }
 }
