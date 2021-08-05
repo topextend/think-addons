@@ -4,7 +4,7 @@
 // |@----------------------------------------------------------------------
 // |@Date         : 2021-08-01 11:23:21
 // |@----------------------------------------------------------------------
-// |@LastEditTime : 2021-08-05 12:31:02
+// |@LastEditTime : 2021-08-05 18:14:42
 // |@----------------------------------------------------------------------
 // |@LastEditors  : Jarmin <jarmin@ladmin.cn>
 // |@----------------------------------------------------------------------
@@ -187,7 +187,7 @@ class Service extends \think\Service
             // 获取插件目录名
             $name = pathinfo($info['dirname'], PATHINFO_FILENAME);
             // 找到插件入口文件
-            if (strtolower($info['filename']) === 'plugin') {
+            if (strtolower($info['filename']) === $name) {
                 // 读取出所有公共方法
                 $methods = (array)get_class_methods("\\addons\\" . $name . "\\" . $info['filename']);
                 // 跟插件基类方法做比对，得到差异结果

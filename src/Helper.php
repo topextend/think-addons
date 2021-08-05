@@ -4,7 +4,7 @@
 // |@----------------------------------------------------------------------
 // |@Date         : 2021-08-01 11:23:21
 // |@----------------------------------------------------------------------
-// |@LastEditTime : 2021-08-05 12:55:40
+// |@LastEditTime : 2021-08-05 18:15:09
 // |@----------------------------------------------------------------------
 // |@LastEditors  : Jarmin <jarmin@ladmin.cn>
 // |@----------------------------------------------------------------------
@@ -129,7 +129,7 @@ if (!function_exists('get_addons_class')) {
                 $namespace = '\\addons\\' . $name . '\\controller\\' . $class;
                 break;
             default:
-                $namespace = '\\addons\\' . $name . '\\' . ucfirst($name);
+                $namespace = '\\addons\\' . $name . '\\'. $class;
         }
         return class_exists($namespace) ? $namespace : '';
     }
